@@ -1,10 +1,17 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <WiFiUdp.h>
+#include <WebSocketsServer.h>
+
+#define MAX_CLIENTS 5 // Máximo número de clientes WebSocket
+
 
 const char* ssid = "SpectrumSetup-B1";
 const char* password = "freeregion321";
 
 ESP8266WebServer server(80);
+WebSocketsServer webSocket = WebSocketsServer(81);
+
 
 const int pinSubir = D1;
 const int pinBajar = D2;
@@ -37,14 +44,45 @@ void setup() {
   Serial.print("Dirección IP: ");
   Serial.println(WiFi.localIP());
 
+
   server.on("/controlActions", HTTP_GET, handleControlActions);
   server.begin();
+
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
+
+
+
 }
 
 void loop() {
+  unsigned long currentMillis = millis();
+  
+  webSocket.loop();
+
+  if(Serial.available()){
+    String data = Serial.readStringUntil('\n');
+    Serial.println(data);
+    data.trim();
+
+    webSocket.broadcastTXT(data);
+  }
+
   server.handleClient();
   manageDesk();
   delay(200);
+  
+
+}
+
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
+  // Manejar eventos de WebSocket aquí (nuevas conexiones, desconexiones, etc.)
+  if(type == WStype_DISCONNECTED){
+    Serial.printf("[%u] Desconectado!\n", num);
+  } else if(type == WStype_CONNECTED){
+    Serial.printf("[%u] Conectado!\n", num);
+  }
+  // Agrega más manejo de eventos si es necesario
 }
 
 void handleControlActions() {

@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "target": "esnext",
+    "module": "commonjs",
+    "jsx": "react", // Esta línea le dice a TypeScript que estás usando JSX de React
+    "strict": true,
+    // ... otras opciones del compilador
+  },
+  // ... otras configuraciones
+}
