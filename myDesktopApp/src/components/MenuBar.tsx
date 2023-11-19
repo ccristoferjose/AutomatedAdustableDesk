@@ -1,16 +1,29 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { View, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import HomeScreen from '../views/HomeScreen';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { GenericNavigationProp } from '../views/navigationTypes';
 
-const MenuBar = () => {
+type Props = {
+    navigation: GenericNavigationProp;
+};
+
+const MenuBar: React.FC<Props> = ( {navigation} ) => {
     return (
         // Barra de Navegación Inferior
         <View style={styles.footer}>
             {/* Iconos o texto para la navegación */}
-            <Icon name="timer" size={30} color="#000" />
-            <Icon name="person" size={30} color="#000" />
-            <Icon name="home" size={30} color="#000" />
+            <TouchableOpacity onPress={()=> navigation.navigate('Home')}>
+                <Icon name="home" size={30} color="#000" />
+            </TouchableOpacity>
+            
             <Icon name="notifications" size={30} color="#000" />
+            <Icon name="timer" size={30} color="#000" />
+            <TouchableOpacity onPress={()=> navigation.navigate('Profile')}>
+                <Icon name="person" size={30} color="#000" />
+            </TouchableOpacity>
+            
         </View>
     );
 };

@@ -12,7 +12,7 @@ int sensorPin = A15; // selecciona el pin de entrada para el MQ135
 int sensorValue = 0; // variable para almacenar el valor del sensor
 
 unsigned long previusMillis = 0;
-const long interval = 15000; 
+const long interval = 25000; 
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -73,16 +73,19 @@ void readTemperature(){
 }
 
 
-//Comunicacion Serial
 void serialDataSend(){
   unsigned long currentMillis = millis();
 
   if(currentMillis - previusMillis >= interval){
-    //AirQuality - Lux - Hum - Temp
+    // AirQuality - Lux - Hum - Temp
     readAirQuality();
     Serial.print("-");
     readLux();
     Serial.print("-");
     readTemperature();
+
+    // Actualizar previusMillis al tiempo actual después de enviar los datos
+    previusMillis = currentMillis;
   }
 }
+

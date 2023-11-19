@@ -1,249 +1,124 @@
 import React, { useEffect, useState } from 'react';
-import { useColorScheme } from 'react-native';
-import { View, Text, Image ,StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import FunctionalCard from './src/components/FunctionalCard';
-import SensorCard from './src/components/SensorCard';
-import MenuBar from './src/components/MenuBar';
+import { SafeAreaView } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import HomeScreen from './src/views/HomeScreen';
+import ProfileScreen from './src/views/ProfileScreen';
 
-
-const lightBanner = require('./src/images/baner3.png');
-const darkBanner = require('./src/images/baner4.png'); // Asumiendo que tienes una versión oscura del banner
-
-
+const Tab = createBottomTabNavigator();
 
 const App = () => {
-  // light 
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-  const [ temperature, setTemperature ] = useState(0);
-  const [ airQuality, setAirQuality ] = useState(0);
-  const [ lux , setLux ] = useState(0);
-  const [ humidity, setHumidity ] = useState(0);
-
-  const [miWebSocket, setMiWebSocket] = useState<WebSocket | null>(null);
-
-  useEffect(() => {
-    const socket = new WebSocket('ws://192.168.1.175:81');
-
-    socket.onopen = () => {
-      console.log('Conectado al servidor');
-    };
-    socket.onmessage = (e) => {
-      //console.log('Mensaje recibido:', e.data);
-      const splitData = e.data.split('-');
-      if(splitData.length === 4){
-        setAirQuality(splitData[0]);
-        let l = parseInt(splitData[1]);
-        setLux(Math.round(l));
-        setHumidity(splitData[2]);
-        let t = parseInt(splitData[3]);
-        setTemperature(Math.round(t));
-      }
-      
-    };
-    socket.onerror = (e) => {
-      console.log('Error:', e);
-    };
-    socket.onclose = (e) => {
-      console.log('Desconectado del servidor');
-    };
-
-    setMiWebSocket(socket);
-
-
-    return () => {
-      socket.close();
-    };
-
-  }, []);
-
-  
-
-  //baner
-  const scheme = useColorScheme(); // 'light' o 'dark'
-  const themeStyles = scheme === 'dark' ? darkStyles : lightStyles;
-  const bannerImage = scheme === 'dark' ? darkBanner : lightBanner;
-
- 
-
   return (
-    <View style={themeStyles.container}>
-      {/* Barra de Estado: Dejar que React Native lo maneje automáticamente */}
+    <SafeAreaView style={{flex:1, backgroundColor:"#FCF0C8"}}>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            switch (route.name) {
+              case 'Home':
+                iconName = 'home';
+                break;
+              case 'Notifications':
+                iconName = 'notifications';
+                break;
+              case 'Timer':
+                iconName = 'timer';
+                break;
+              case 'Profile':
+                iconName = 'person';
+                break;
+              // Define un caso para cada nombre de ruta en tu Tab.Navigator
+              
+              default:
+                iconName = 'default-icon-name'; // Ícono por defecto para rutas no especificadas
+                break;
+            }
+            // Puedes añadir más casos para otras pantallas
+            return <Icon name={iconName} size={30} color={color} />;
+          },
+          tabBarActiveTintColor: 'black',
+          tabBarInactiveTintColor: 'gray',
+          tabBarShowLabel: false,
+          tabBarStyle: {
+            height: 55,
+            backgroundColor: 'rgba(255, 255, 255, 0.7)', 
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            borderBottomLeftRadius: 30,
+            borderBottomRightRadius: 30,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.15,
+            shadowRadius: 3,
+            elevation: 5,
+            marginBottom: 0,
+            paddingHorizontal: 25,
+            marginHorizontal: 20,
+            
+          },
+          tabBarLabelStyle: {
+            
+          },
+        })}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} 
+          options={{
+            headerStyle: {
+              backgroundColor: '#FCF0C8', // El color que deseas para tu header
+            },
+            //headerTintColor: '#fff', // Color para el texto del header y los íconos
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            title: 'Home', // Título para la pantalla Home
+        }}
+        />
+        <Tab.Screen name="Notifications" component={HomeScreen} 
+          options={{
+            headerStyle: {
+              backgroundColor: '#FCF0C8', // El color que deseas para tu header
+            },
+            //headerTintColor: '#fff', // Color para el texto del header y los íconos
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            title: 'Notifications', // Título para la pantalla Home
+          }}
+        />
+        <Tab.Screen name="Timer" component={HomeScreen} 
+          options={{
+            headerStyle: {
+              backgroundColor: '#FCF0C8', // El color que deseas para tu header
+            },
+            //headerTintColor: '#fff', // Color para el texto del header y los íconos
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            title: 'Timer', // Título para la pantalla Home
+          }}        
+        />
+        <Tab.Screen name="Profile" component={ProfileScreen} 
+          options={{
+            headerStyle: {
+              backgroundColor: '#FCF0C8', // El color que deseas para tu header
+            },
+            //headerTintColor: '#fff', // Color para el texto del header y los íconos
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            title: 'Profile', // Título para la pantalla Home
+          }}        
+        
+        />
+        
 
-      {/* Barra de Navegación Superior */}
-      <View style={themeStyles.header}>
-        {/* Contenido del header */}
-      </View>
-
-      {/* Sección de Contenido Principal */}
-      <ScrollView style={themeStyles.content}>
-        {/* Anuncio "Govee Fan Fest 2023" */}
-        <View style={themeStyles.banner}>
-          <Image 
-            source = {bannerImage}
-            resizeMode='contain'
-            style= {themeStyles.image}
-          ></Image>
-          
-        </View>
-
-        {/* Botones de Categoría */}
-        <View style={themeStyles.categoryButtons}>
-
-          <TouchableOpacity style={themeStyles.button}><Text>Air Quality</Text></TouchableOpacity>
-          <TouchableOpacity style={themeStyles.button}><Text> ligth </Text></TouchableOpacity>
-          <TouchableOpacity style={themeStyles.button}><Text> Temperature </Text></TouchableOpacity>
-          <TouchableOpacity style={themeStyles.button}><Text> All </Text></TouchableOpacity>
-
-        </View>
-
-        {/* Tarjetas de Dispositivos */}
-        <View >
-          <FunctionalCard/>
-        </View>
-        <View style={themeStyles.deviceCards}>
-          <SensorCard
-          sensorImage={require('./src/images/temp.png')}
-          data={temperature}
-          dataType="°C"
-          />
-          <SensorCard
-            sensorImage={require('./src/images/air_quality.png')}
-            data={airQuality}
-            dataType="ppm"
-          />
-        </View>
-        <View style={themeStyles.deviceCards}>
-          <SensorCard
-            sensorImage = {require('./src/images/light_sensor.png')}
-            data = {lux}
-            dataType = 'lux'
-          />
-          <SensorCard
-            sensorImage = {require('./src/images/hum.png')}
-            data = {humidity}
-            dataType = '%'
-          />
-        </View>
-      </ScrollView>
-      <MenuBar/>
-
-    </View>
+        {/* Añade otras pantallas aquí */}
+      </Tab.Navigator>
+    </NavigationContainer>
+    </SafeAreaView>
   );
 }
-
-const lightStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FCF0C8',
-  },
-  header: {
-    height: 50,
-    backgroundColor: '#FCF0C8',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerText: {
-    fontSize: 20,
-  },
-  content: {
-    flex:1,
-    backgroundColor: '#FCF0C8',
-  },
-
-  image: {
-    width: 300,
-    height: 250,
-  },
-
-  banner: {
-    height: 150,
-    backgroundColor: '#FCF0C8',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bannerText: {
-    fontSize: 24,
-  },
-  categoryButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 20,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  button: {
-    backgroundColor: '#F5F5F5',
-    borderWidth: 1,
-    borderColor: '#81b0ff',
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    elevation: 2,
-    shadowColor: '#81b0ff',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
-  },
-
-  buttonText: {
-    color: '#81b0ff',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  search: {
-    flex: 1,
-    backgroundColor: '#dedede',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  deviceCards: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 0,
-  },
-  deviceCard: {
-    flex: 1,
-    flexDirection: 'column', // Para alinear elementos verticalmente
-    justifyContent: 'flex-start', // Distribuye el espacio uniformemente
-    alignItems: 'center', // Centra los elementos horizontalmente
-    backgroundColor: '#033f4e', // Un color de fondo claro similar al de la imagen
-    borderRadius: 20, // Bordes redondeados
-    padding: 10, // Espacio interior
-    margin: 10, // Espacio entre tarjetas
-    shadowColor: '#000', // Color de la sombra
-    shadowOffset: { width: 0, height: 2 }, // Posición de la sombra
-    shadowOpacity: 0.25, // Opacidad de la sombra
-    shadowRadius: 3.84, // Radio de la sombra
-    elevation: 5, // Elevación para Android (produce la sombra)
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: 2,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#F5F5F5', // Color de borde del contenedor
-    marginTop: 0,
-    
-  },
-  switch: {
-    transform: [{ scaleX: 1 }, { scaleY: 1 }],
-    margin: 0,
-  },
-
-  
-});
-
-const darkStyles = StyleSheet.create({
-
-});
-
 
 export default App;
