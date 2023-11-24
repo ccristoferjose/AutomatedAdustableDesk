@@ -26,12 +26,6 @@ exports.getNotifications = async (req, res) => {
     }
 };
 
-exports.updateNotification = async (req, res) => {
-
-}
-
-
-
 exports.insertNotification = async (req, res) => {
     const { title, message } = req.body;
     const params = [1, title, message];
@@ -96,17 +90,18 @@ exports.getHistoricalData = async (req, res) => {
 
     try {
         let sql = "";
+        console.log(id);
         switch (id) {
-            case 1:
+            case "1":
                 sql = sql1;
                 break;
-            case 2:
+            case "2":
                 sql = sql2;
                 break;
-            case 3:
+            case "3":
                 sql = sql3;
                 break;
-            case 4:
+            case "4":
                 sql = sql4;
                 break;
             default:
