@@ -88,7 +88,7 @@ exports.insertData = async (airQuality, lux, humidity, temperature) => {
 };
 
 exports.getHistoricalData = async (req, res) => {
-    const { sensorId } = req.params;
+    const { id } = req.params;
     const sql1 = `CALL getTempHistory()`;
     const sql2 = `CALL getLuxHistory()`;
     const sql3 = `CALL getHumidityHistory()`;
@@ -96,7 +96,7 @@ exports.getHistoricalData = async (req, res) => {
 
     try {
         let sql = "";
-        switch (sensorId) {
+        switch (id) {
             case 1:
                 sql = sql1;
                 break;
