@@ -36,6 +36,12 @@ wsClient.on('open', function open() {
 });
 
 wsClient.on('message', function incoming(data) {
+    console.log('Received from WebSocket server:', data);
+    if(data.toString() === 'airQualityLow'){
+        const title =  "Air Quality Low";
+        const message = "Air quality is under the params of a good quality";
+        dataService.insertNotification(title, message);
+    }
     dataBuffer = data.toString().split('-').map(Number);
     console.log(dataBuffer);
     

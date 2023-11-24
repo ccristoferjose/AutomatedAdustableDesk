@@ -45,9 +45,21 @@ exports.insertNotification = async (req, res) => {
     }
 };
 
+exports.insertNotification = async (title, message) => {
+    const params = [1, title, message]; // Asumiendo que 1 es un ID de usuario o similar
+    const sql = 'CALL insertNotification(?,?,?)';
+    try {
+        const response = await db.query(sql, params);
+        console.log("Notificación insertada", response);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+
 exports.updateNotification = async (req, res) => {
     const { id } = req.params;
-    const params = [1,id];
+    const params = [id,1];
     const sql = 'CALL updateNotificationStatus(?,?)';
     try {
         const response = await db.query(sql, params);
@@ -74,3 +86,4 @@ exports.insertData = async (airQuality, lux, humidity, temperature) => {
     }
       
 };
+
