@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './src/views/HomeScreen';
 import ProfileScreen from './src/views/ProfileScreen';
+import NotificationsScreen from './src/views/NotificationsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -75,7 +76,7 @@ const App = () => {
             title: 'Home', // Título para la pantalla Home
         }}
         />
-        <Tab.Screen name="Notifications" component={HomeScreen} 
+        <Tab.Screen name="Notifications" component={NotificationsScreen} 
           options={{
             headerStyle: {
               backgroundColor: '#FCF0C8', // El color que deseas para tu header
@@ -84,7 +85,7 @@ const App = () => {
             headerTitleStyle: {
               fontWeight: 'bold',
             },
-            title: 'Notifications', // Título para la pantalla Home
+            title: 'Notification', // Título para la pantalla Home
           }}
         />
         <Tab.Screen name="Timer" component={HomeScreen} 

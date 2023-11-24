@@ -12,6 +12,14 @@ int sensorPin = A15; // selecciona el pin de entrada para el MQ135
 int sensorValue = 0; // variable para almacenar el valor del sensor
 
 unsigned long previusMillis = 0;
+
+int airQuality = 0;
+const int airQualityReference = 50;
+unsigned long airQualityStartTime = 0;
+bool AirQualityTimeReset = true;
+bool BadAirQuality = false;
+bool AirQualityTimerActive = false;
+ 
 const long interval = 25000; 
 
 DHT dht(DHTPIN, DHTTYPE);
@@ -37,12 +45,16 @@ void setup(void) {
 void loop(void) {
 
   serialDataSend();
+  AirQualityCheck();
+
 }
 
 void readAirQuality(){
   sensorValue = analogRead(sensorPin); // lee el valor del sensor
+
   //Serial.print("Air Quality: ");
   Serial.print(sensorValue); // envía el valor a la computadora
+
 }
 
 void readLux(){
@@ -72,6 +84,29 @@ void readTemperature(){
   //Serial.println(" *C");
 }
 
+void AirQualityCheck() {
+  if (sensorValue >= airQualityReference) {
+    if (!AirQualityTimerActive) {
+      // La calidad del aire es mala y el temporizador no estaba activo, lo activamos y guardamos el tiempo actual
+      airQualityStartTime = millis();
+      AirQualityTimerActive = true;
+    } else {
+      // El temporizador ya estaba activo, verificamos si ha pasado el tiempo suficiente
+      if (millis() - airQualityStartTime >= 20000) { // 20000 milisegundos = 20 segundos
+        // Indica que la calidad del aire es mala y envía el mensaje
+       
+        Serial.println("airQualityLow");
+
+        AirQualityTimerActive = false;
+        // Reiniciar el temporizador y el estado para esperar otra ocurrencia de 20 segundos de mala calidad del aire
+      }
+    }
+  } else {
+    // La calidad del aire es buena, reiniciar el temporizador y el estado
+    AirQualityTimerActive = false;
+    BadAirQuality = false;
+  }
+}
 
 void serialDataSend(){
   unsigned long currentMillis = millis();

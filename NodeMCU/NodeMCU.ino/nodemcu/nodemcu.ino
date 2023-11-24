@@ -62,10 +62,11 @@ void loop() {
 
   if(Serial.available()){
     String data = Serial.readStringUntil('\n');
+
     Serial.println(data);
     data.trim();
-
     webSocket.broadcastTXT(data);
+
   }
 
   server.handleClient();

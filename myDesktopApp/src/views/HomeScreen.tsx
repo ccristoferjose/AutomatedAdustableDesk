@@ -5,6 +5,7 @@ import FunctionalCard from '../components/FunctionalCard';
 import SensorCard from '../components/SensorCard';
 import MenuBar from '../components/MenuBar';
 import { GenericNavigationProp } from './navigationTypes';
+import GraphCard from '../components/GraphsCard';
 
 type Props = {
   navigation: GenericNavigationProp;
@@ -33,17 +34,19 @@ const HomeScreen: React.FC<Props> = ( {navigation} ) => {
       console.log('Conectado al servidor');
     };
     socket.onmessage = (e) => {
-      //console.log('Mensaje recibido:', e.data);
+      console.log('Mensaje recibido:', e.data);
       const splitData = e.data.split('-');
       if(splitData.length === 4){
-        setAirQuality(splitData[0]);
+        let a = parseInt(splitData[0]);
+        setAirQuality(Math.trunc(a));
         let l = parseInt(splitData[1]);
-        setLux(Math.round(l));
+        setLux(Math.trunc(l));
         let h = parseInt(splitData[2]);
-        setHumidity(Math.round(h));
+        setHumidity(Math.trunc(h));
         let t = parseInt(splitData[3]);
-        setTemperature(Math.round(t));
+        setTemperature(Math.trunc(t));
       }
+      
       
     };
     socket.onerror = (e) => {
@@ -130,6 +133,10 @@ const HomeScreen: React.FC<Props> = ( {navigation} ) => {
             dataType = '%'
           />
         </View>
+        <View>
+          <GraphCard />
+        </View>
+
       </ScrollView>
 
     </View>
