@@ -22,10 +22,14 @@ const HomeScreen: React.FC<Props> = ( {navigation} ) => {
 
   const [miWebSocket, setMiWebSocket] = useState<WebSocket | null>(null);
 
+  const [activeSensor, setActiveSensor] = useState<null | string>(null);
 
   const lightBanner = require('../images/baner3.png');
   const darkBanner = require('../images/baner4.png'); 
   
+  const handleSensorSelection = (sensor: string) => {
+    setActiveSensor(sensor);
+  }
 
   useEffect(() => {
     const socket = new WebSocket('ws://192.168.1.175:81');
@@ -46,7 +50,6 @@ const HomeScreen: React.FC<Props> = ( {navigation} ) => {
         let t = parseInt(splitData[3]);
         setTemperature(Math.trunc(t));
       }
-      
       
     };
     socket.onerror = (e) => {
@@ -97,12 +100,10 @@ const HomeScreen: React.FC<Props> = ( {navigation} ) => {
 
         {/* Botones de Categoría */}
         <View style={themeStyles.categoryButtons}>
-
-          <TouchableOpacity style={lightStyles.button}><Text>Air Quality</Text></TouchableOpacity>
-          <TouchableOpacity style={lightStyles.button}><Text> ligth </Text></TouchableOpacity>
-          <TouchableOpacity style={lightStyles.button}><Text> Temperature </Text></TouchableOpacity>
-          <TouchableOpacity style={lightStyles.button}><Text> All </Text></TouchableOpacity>
-
+          <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("4")}><Text>Air Quality</Text></TouchableOpacity>
+          <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("2")}><Text> ligth </Text></TouchableOpacity>
+          <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("1")}><Text> Temperature </Text></TouchableOpacity>
+          <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("3")}><Text> Humidity </Text></TouchableOpacity>
         </View>
 
         {/* Tarjetas de Dispositivos */}
@@ -133,10 +134,30 @@ const HomeScreen: React.FC<Props> = ( {navigation} ) => {
             dataType = '%'
           />
         </View>
-        <View>
-          <GraphCard />
-        </View>
-
+        {activeSensor === "1" && (
+          <View>
+            <Text style = {themeStyles.graphTitle}> Temperature </Text>
+            <GraphCard sensor = "1"/>
+          </View>
+        )}
+        {activeSensor === "2" && (
+          <View>
+            <Text style = {themeStyles.graphTitle}> Lux </Text>
+            <GraphCard sensor = "2"/>
+          </View>
+        )}
+        {activeSensor === "3" && (
+          <View>
+            <Text style = {themeStyles.graphTitle}> Humidity </Text>
+            <GraphCard sensor = "3"/>
+          </View>
+        )}
+        {activeSensor === "4" && (
+          <View>
+            <Text style = {themeStyles.graphTitle}> Air Quality </Text>
+            <GraphCard sensor = "4"/>
+          </View>
+        )}
       </ScrollView>
 
     </View>
@@ -233,7 +254,11 @@ const lightStyles = StyleSheet.create({
     transform: [{ scaleX: 1 }, { scaleY: 1 }],
     margin: 0,
   },
-
+  graphTitle: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginVertical: 10,
+  }
   
 });
 
@@ -274,6 +299,11 @@ const darkStyles = StyleSheet.create({
     flexWrap: 'wrap',
     padding: 0,
   },
+  graphTitle: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginVertical: 10,
+  }
 });
 
 
