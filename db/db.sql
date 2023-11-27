@@ -74,6 +74,48 @@ BEGIN
 END //
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS getTempHistory;
+DELIMITER //
+CREATE PROCEDURE getTempHistory()
+BEGIN
+	SELECT Temperature, Timestamp FROM SensorData
+    ORDER BY Timestamp ASC 
+    LIMIT 15;
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS getLuxHistory;
+DELIMITER //
+CREATE PROCEDURE getLuxHistory()
+BEGIN
+	SELECT Lux, Timestamp FROM SensorData
+    ORDER BY Timestamp ASC 
+    LIMIT 15;
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS getAQHistory;
+DELIMITER //
+CREATE PROCEDURE getAQHistory()
+BEGIN
+	SELECT AirQuality, Timestamp FROM SensorData
+    ORDER BY Timestamp ASC 
+    LIMIT 15;
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS getHumidityHistory;
+DELIMITER //
+CREATE PROCEDURE getHumidityHistory()
+BEGIN
+	SELECT Humidity, Timestamp FROM SensorData
+    ORDER BY Timestamp ASC
+    LIMIT 15;
+END //
+DELIMITER ;
+
+
+
 DROP PROCEDURE IF EXISTS updateNotificationStatus;
 DELIMITER //
 CREATE PROCEDURE updateNotificationStatus(
@@ -86,18 +128,12 @@ BEGIN
     UPDATE Notification
     SET IsRead = TRUE
     WHERE NotificationID = _NotificationID AND UserID = _UserID;
-
-    SET num_rows = ROW_COUNT();
-    
-    IF num_rows = 0 THEN
-        SET message = 'No existe la notificación o no pertenece al usuario';
-    ELSE
-        SET message = 'Actualizada con éxito';
-    END IF;
-    SELECT 1 as resultado;
+	
 END //
 DELIMITER ;
 
+CALL updateNotificationStatus(3,1);
 
 SELECT * FROM SensorData;
+SELECT * FROM Notification;
 
