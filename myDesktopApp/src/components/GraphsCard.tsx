@@ -30,6 +30,8 @@ const GraphCard: React.FC<Props> = ( { sensor}) => {
 
     useEffect(() => {
         dataFecth();
+        const interval = setInterval(dataFecth, 20000);
+        return () => clearInterval(interval);
     }, [sensor]);
 
     const dataFecth = async () => {
@@ -68,8 +70,9 @@ const GraphCard: React.FC<Props> = ( { sensor}) => {
        } catch (error) {
         console.log('Hubo un problema con la operación fetch:', error);
        }
-
     }
+
+
   
     return (
         data.labels.length > 0 ? (

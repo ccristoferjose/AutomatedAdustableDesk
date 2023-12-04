@@ -28,7 +28,12 @@ const HomeScreen: React.FC<Props> = ( {navigation} ) => {
   const darkBanner = require('../images/baner4.png'); 
   
   const handleSensorSelection = (sensor: string) => {
-    setActiveSensor(sensor);
+    if(activeSensor === sensor){
+      setActiveSensor(null);
+    }else {
+      setActiveSensor(sensor);
+    }
+    
   }
 
   useEffect(() => {
@@ -97,15 +102,52 @@ const HomeScreen: React.FC<Props> = ( {navigation} ) => {
           ></Image>
           
         </View>
-
-        {/* Botones de Categoría */}
-        <View style={themeStyles.categoryButtons}>
-          <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("4")}><Text>Air Quality</Text></TouchableOpacity>
-          <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("2")}><Text> ligth </Text></TouchableOpacity>
-          <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("1")}><Text> Temperature </Text></TouchableOpacity>
-          <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("3")}><Text> Humidity </Text></TouchableOpacity>
+        <ScrollView 
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
+          {/* Botones de Categoría */}
+          <View style={themeStyles.categoryButtons}>
+            <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("4")}><Text>Air Quality</Text></TouchableOpacity>
+            <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("2")}><Text> ligth </Text></TouchableOpacity>
+            <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("1")}><Text> Temperature </Text></TouchableOpacity>
+            <TouchableOpacity style={lightStyles.button} onPress={ () => handleSensorSelection("3")}><Text> Humidity </Text></TouchableOpacity>
+          </View>
+        </ScrollView>
+        
+        <ScrollView 
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
+        {/* Sensor graphs */}
+        <View style={ lightStyles.graphCard }>
+          {activeSensor === "1" && (
+          <View>
+            <Text style = {themeStyles.graphTitle}> Temperature </Text>
+            <GraphCard sensor = "1"/>
+          </View>
+          )}
         </View>
-
+        
+        {activeSensor === "2" && (
+          <View>
+            <Text style = {themeStyles.graphTitle}> Lux </Text>
+            <GraphCard sensor = "2"/>
+          </View>
+        )}
+        {activeSensor === "3" && (
+          <View>
+            <Text style = {themeStyles.graphTitle}> Humidity </Text>
+            <GraphCard sensor = "3"/>
+          </View>
+        )}
+        {activeSensor === "4" && (
+          <View>
+            <Text style = {themeStyles.graphTitle}> Air Quality </Text>
+            <GraphCard sensor = "4"/>
+          </View>
+        )}
+        </ScrollView>
         {/* Tarjetas de Dispositivos */}
         <View >
           <FunctionalCard/>
@@ -134,30 +176,7 @@ const HomeScreen: React.FC<Props> = ( {navigation} ) => {
             dataType = '%'
           />
         </View>
-        {activeSensor === "1" && (
-          <View>
-            <Text style = {themeStyles.graphTitle}> Temperature </Text>
-            <GraphCard sensor = "1"/>
-          </View>
-        )}
-        {activeSensor === "2" && (
-          <View>
-            <Text style = {themeStyles.graphTitle}> Lux </Text>
-            <GraphCard sensor = "2"/>
-          </View>
-        )}
-        {activeSensor === "3" && (
-          <View>
-            <Text style = {themeStyles.graphTitle}> Humidity </Text>
-            <GraphCard sensor = "3"/>
-          </View>
-        )}
-        {activeSensor === "4" && (
-          <View>
-            <Text style = {themeStyles.graphTitle}> Air Quality </Text>
-            <GraphCard sensor = "4"/>
-          </View>
-        )}
+       
       </ScrollView>
 
     </View>
@@ -201,6 +220,7 @@ const lightStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 20,
+    
   },
   actionButtons: {
     flexDirection: 'row',
@@ -219,6 +239,7 @@ const lightStyles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.5,
+    marginHorizontal: 3,
   },
 
   buttonText: {
@@ -248,7 +269,9 @@ const lightStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F5F5F5', // Color de borde del contenedor
     marginTop: 0,
-    
+  },
+  graphCard:{
+    padding: 8,
   },
   switch: {
     transform: [{ scaleX: 1 }, { scaleY: 1 }],

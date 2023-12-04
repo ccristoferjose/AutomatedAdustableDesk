@@ -14,13 +14,13 @@ int sensorValue = 0; // variable para almacenar el valor del sensor
 unsigned long previusMillis = 0;
 
 int airQuality = 0;
-const int airQualityReference = 50;
+const int airQualityReference = 70;
 unsigned long airQualityStartTime = 0;
 bool AirQualityTimeReset = true;
 bool BadAirQuality = false;
 bool AirQualityTimerActive = false;
  
-const long interval = 25000; 
+const long interval = 20000; 
 
 DHT dht(DHTPIN, DHTTYPE);
 
